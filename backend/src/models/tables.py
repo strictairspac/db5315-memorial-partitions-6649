@@ -1,5 +1,5 @@
-from sqlalchemy import (JSON, Column, ForeignKey, Integer, MetaData, String,
-                        Table, Text)
+from sqlalchemy import (JSON, Column, Date, ForeignKey, Integer, MetaData,
+                        String, Table, Text)
 
 schema = MetaData()
 users = Table('accounts', schema,
@@ -38,3 +38,25 @@ audit = Table('audit_events', schema,
     Column('action', String(32), nullable=False),
     Column('reference', String(50), nullable=False),
     Column('created_at', String(32), nullable=False))
+# 在册凭条索引：与分区账簿 slip_ledger 同事务写入，凭条编号全账唯一。
+slips = Table('slip_index', schema,
+    Column('slip_id', String(64), primary_key=True),
+    Column('entered_on', Date, nullable=False),
+    Column('gate', String(40), nullable=False),
+    Column('batch_id', String(64), nullable=False),
+    Column('recorded_by', String(40), nullable=False),
+    Column('updated_at', String(32), nullable=False))
+# 更正单：order_id 为幂等键，ack 保存落库时的回执，重试原样返回。
+corrections = Table('correction_orders', schema,
+    Column('order_id', String(64), primary_key=True),
+    Column('slip_id', String(64), nullable=False, index=True),
+    Column('from_date', Date, nullable=False),
+    Column('to_date', Date, nullable=False),
+    Column('ack', JSON, nullable=False),
+    Column('actor', String(40), nullable=False),
+    Column('created_at', String(32), nullable=False))
+# 月结登记：已月结月份的凭条不得迁入或迁出。
+closes = Table('month_close', schema,
+    Column('month', Date, primary_key=True),
+    Column('closed_by', String(40), nullable=False),
+    Column('closed_at', String(32), nullable=False))

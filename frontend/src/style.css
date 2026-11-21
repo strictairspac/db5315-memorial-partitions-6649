@@ -71,6 +71,7 @@ td { border-top:1px solid var(--line); min-width: 3.3rem; max-width: 35ch; }
 .status[data-state='complete'] { color: oklch(.35 .09 150); border-color: oklch(.78 .11 151); }
 .status[data-state='failed'],.error { color: oklch(.36 .15 27); background: oklch(.94 .045 26); }
 .error { padding:.7rem .9rem; margin-bottom:1rem; border-inline-start:3px solid currentColor; }
+.ok { color: oklch(.35 .09 150); background: oklch(.95 .04 150); padding:.7rem .9rem; margin-bottom:1rem; border-inline-start:3px solid currentColor; }
 .empty { margin:0; padding:1.3rem; color:var(--muted); background:var(--soft); }
 summary { cursor:pointer; font-weight:600; color:var(--accent-dark); }
 .digest { word-break:break-all; }
